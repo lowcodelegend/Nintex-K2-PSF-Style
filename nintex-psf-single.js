@@ -23,6 +23,8 @@
   var state = {
     initialized: false,
     mobileHeaderBound: false,
+    headerResizeBound: false,
+    tabFlowBound: false,
     footerResizeBound: false,
     footerTabBound: false,
     waveAnimationStarted: false
@@ -83,7 +85,7 @@ body.theme-entry .psf,
   --heading2-text-size: 2.25rem;
   --heading3-text-size: 1.75rem;
   --heading4-text-size: 1.45rem;
-  --view-header-text-size: 1.35rem;
+  --view-header-text-size: 1.45rem;
   --main-text-size: 1.35rem;
   --input-label-text-size: 1.15rem;
   --input-background-color: var(--ntx-white);
@@ -195,7 +197,7 @@ body {
 .theme-entry.psf .ntx-wave-layer--top {
   animation: ntx-bg-wave 36s linear infinite;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 5392 393' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.09229 380.193C256.031 398.471 485.518 390.369 880.247 185.382C1106.65 67.8087 1461.65 -152.288 2122.03 187.076C2244.01 249.758 2521.84 361.57 2696.34 380.205M2696 380.193C2950.94 398.471 3180.43 390.369 3575.15 185.382C3801.56 67.8087 4156.56 -152.288 4816.94 187.076C4938.92 249.758 5216.75 361.57 5391.24 380.205' stroke='url(%23grad)' stroke-width='4' stroke-miterlimit='10' fill='none'/%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23FF6D00'/%3E%3Cstop offset='50%25' stop-color='%23ED2891'/%3E%3Cstop offset='100%25' stop-color='%238439A6'/%3E%3C/linearGradient%3E%3C/svg%3E");
-  top: 1.5%;
+  top: calc(1.5% - 5px);
 }
 
 .theme-entry.psf .ntx-wave-layer--top-secondary {
@@ -260,7 +262,7 @@ body {
   grid-template-rows: 140px auto;
   height: 100vh;
   left: 0;
-  overflow-y: auto;
+  overflow: visible;
   padding: 28px 30px 40px;
   position: fixed;
   top: 0;
@@ -286,6 +288,7 @@ body {
 
 .theme-entry.psf .psf-sidebar-tabs {
   grid-row: 2;
+  overflow: visible;
 }
 
 .theme-entry.psf .psf-sidebar .tab-box-tabs {
@@ -300,6 +303,7 @@ body {
 .theme-entry.psf .psf-sidebar .tab-box-tabs > li {
   display: block !important;
   margin: 0 !important;
+  overflow: visible;
   width: 100%;
 }
 
@@ -314,17 +318,18 @@ body {
   font-weight: 650;
   line-height: 1.15;
   min-height: 58px;
-  overflow: hidden;
+  overflow: visible;
   padding: 0 24px !important;
   position: relative;
   text-decoration: none;
-  width: 100%;
+  width: calc(100% + 12px);
 }
 
 .theme-entry.psf .psf-sidebar .tab-box-tabs > li > a.tab:hover,
 .theme-entry.psf .psf-sidebar .tab-box-tabs > li > a.tab.selected {
   background: var(--ntx-white) !important;
   color: var(--ntx-deep-navy) !important;
+  z-index: 2;
 }
 
 .theme-entry.psf .psf-sidebar .tab-box-tabs > li > a.tab.selected::after {
@@ -335,6 +340,26 @@ body {
   position: absolute;
   top: 0;
   width: 4px;
+  z-index: 2;
+}
+
+.theme-entry.psf .psf-tab-flow {
+  height: 100vh;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: fixed;
+  width: 100vw;
+  z-index: 10001;
+}
+
+.theme-entry.psf .psf-tab-flow path {
+  fill: var(--ntx-white);
+  shape-rendering: geometricPrecision;
+  stroke: rgba(255, 255, 255, 0.98);
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
 }
 
 .theme-entry.psf .psf-sidebar .tab-wrapper {
@@ -343,6 +368,7 @@ body {
   display: flex !important;
   gap: 12px;
   width: 100%;
+  z-index: 1;
 }
 
 .theme-entry.psf .psf-sidebar .tab-wrapper::before {
@@ -399,10 +425,14 @@ body {
   content: "close";
 }
 
-.theme-entry.psf .header {
+.theme-entry.psf .view.header {
   background: transparent !important;
+  height: 148px !important;
   margin-bottom: 4px;
   margin-top: 0;
+  max-height: 148px !important;
+  min-height: 0 !important;
+  overflow: visible !important;
 }
 
 .theme-entry.psf .header * {
@@ -419,6 +449,21 @@ body {
   box-shadow: none !important;
   color: var(--normal-text-color);
   padding: 8px 10px 6px !important;
+}
+
+.theme-entry.psf .header .panel-body-m,
+.theme-entry.psf .header .panel-body-wrapper,
+.theme-entry.psf .header .innerpanel {
+  overflow: visible !important;
+}
+
+.theme-entry.psf .header .panel-body-wrapper > div > .root-table {
+  grid-template-rows: auto !important;
+  -ms-grid-rows: auto !important;
+}
+
+.theme-entry.psf .header .panel-body-wrapper > div > .root-table > span[row="2"] {
+  display: none !important;
 }
 
 .theme-entry.psf .header h1 {
@@ -447,7 +492,7 @@ body {
 }
 
 .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] {
-  grid-template-columns: 1fr 220px !important;
+  grid-template-columns: 1fr 300px !important;
   overflow: visible !important;
 }
 
@@ -480,6 +525,7 @@ body {
 .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] > span[col="2"][row="1"] {
   position: relative !important;
   top: -16px;
+  transform: translateX(120px);
 }
 
 .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] > span[col="2"][row="1"] > div {
@@ -490,9 +536,22 @@ body {
 .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] > span[col="2"][row="1"] p,
 .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] > span[col="2"][row="1"] span.SFC {
   color: rgba(0, 4, 38, 0.82) !important;
-  font-size: 0.95rem !important;
+  font-size: var(--input-label-text-size) !important;
   font-weight: 500 !important;
   line-height: 1.35 !important;
+}
+
+.theme-entry.psf .header + .form-tabs {
+  margin-top: 0 !important;
+}
+
+.theme-entry.psf .formpanel > .form > .row:empty {
+  display: none !important;
+}
+
+.theme-entry.psf .formpanel > .form > .row:first-child {
+  margin: 0 !important;
+  min-height: 0 !important;
 }
 
 .theme-entry.psf .panel-header-wrapper,
@@ -552,6 +611,33 @@ body {
 .theme-entry.psf .panel-body-wrapper,
 .theme-entry.psf .grid-body {
   background: var(--ntx-white) !important;
+}
+
+.theme-entry.psf .form-tabs > .tab-box-body,
+.theme-entry.psf .form-tabs > .tab-box-body .tab-box-body-m-c,
+.theme-entry.psf .form-tabs > .tab-box-body .tab-box-body-wrapper,
+.theme-entry.psf .formpanel,
+.theme-entry.psf .formpanel > .form,
+.theme-entry.psf .formpanel > .form > .row,
+.theme-entry.psf .formpanel > .form > .row > .view,
+.theme-entry.psf .formpanel > .form > .row > .view > .innerpanel {
+  background: transparent !important;
+}
+
+.theme-entry.psf .formpanel > .form > .row > .view > .innerpanel > .grid,
+.theme-entry.psf .formpanel > .form > .row > .view > .innerpanel > .panel {
+  background: transparent !important;
+}
+
+.theme-entry.psf .formpanel > .form > .row > .view .grid-header,
+.theme-entry.psf .formpanel > .form > .row > .view .grid-header-wrapper,
+.theme-entry.psf .formpanel > .form > .row > .view .toolbars,
+.theme-entry.psf .formpanel > .form > .row > .view .toolbar-wrapper,
+.theme-entry.psf .formpanel > .form > .row > .view .panel-header,
+.theme-entry.psf .formpanel > .form > .row > .view .panel-header-wrapper,
+.theme-entry.psf .formpanel > .form > .row > .view .panel-body-wrapper,
+.theme-entry.psf .formpanel > .form > .row > .view .grid-body {
+  background: transparent !important;
 }
 
 .theme-entry.psf .SFC.SourceCode-Forms-Controls-Web-TextBox.watermark,
@@ -934,6 +1020,7 @@ body {
 
   .theme-entry.psf .psf-sidebar {
     max-width: min(86vw, 320px);
+    overflow: hidden;
     transform: translateX(-105%);
     transition: transform 0.22s ease;
     width: min(86vw, 320px);
@@ -966,7 +1053,9 @@ body {
   }
 
   .theme-entry.psf .header {
+    height: auto !important;
     margin-top: 0;
+    max-height: none !important;
   }
 
   .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] > span[col="1"][row="1"] > div > span[col="2"][row="1"] {
@@ -975,6 +1064,7 @@ body {
 
   .theme-entry.psf .header .panel-body-wrapper div[name="tblLargeHeader"] > span[col="2"][row="1"] {
     top: 0;
+    transform: none;
   }
 
   .theme-entry.psf form {
@@ -1140,9 +1230,43 @@ body {
     return clone;
   }
 
+  function applyHeaderCompact($, header) {
+    header = header && header.length ? header : $(".theme-entry.psf .view.header").first();
+    if (!header.length) {
+      header = markView($, CONFIG.headerViewName, "header");
+    }
+
+    if (!header.length) {
+      return;
+    }
+
+    var headerNode = header[0];
+    if (isMobile()) {
+      headerNode.style.setProperty("height", "auto", "important");
+      headerNode.style.setProperty("max-height", "none", "important");
+    } else {
+      headerNode.style.setProperty("height", "148px", "important");
+      headerNode.style.setProperty("max-height", "148px", "important");
+    }
+
+    headerNode.style.setProperty("min-height", "0", "important");
+    headerNode.style.setProperty("overflow", "visible", "important");
+    header.find(".panel-body-wrapper").first().each(function () {
+      this.style.setProperty("overflow", "visible", "important");
+    });
+  }
+
   function renderHeader($) {
     var header = markView($, CONFIG.headerViewName, "header");
     $('span[name="' + CONFIG.logoCellName + '"]').addClass("logo psf-header-logo-source");
+    applyHeaderCompact($, header);
+
+    [0, 250, 1000].forEach(function (delay) {
+      window.setTimeout(function () {
+        applyHeaderCompact($);
+        renderFooter($);
+      }, delay);
+    });
 
     if (!header.length || state.mobileHeaderBound) {
       return;
@@ -1193,6 +1317,102 @@ body {
       $(".theme-entry.psf").removeClass("psf-sidebar-open");
       toggle.attr("aria-expanded", "false");
     });
+
+    renderTabFlow($);
+    [0, 250, 1000].forEach(function (delay) {
+      window.setTimeout(function () {
+        renderTabFlow($);
+      }, delay);
+    });
+  }
+
+  function findVisibleTabView($) {
+    var selected = $("#psf-sidebar a.tab.selected").first();
+    var panel = $();
+    if (selected.length && selected.attr("id")) {
+      panel = $(document.getElementById(selected.attr("id") + "_form"));
+    }
+
+    if (!panel.length || !panel.is(":visible")) {
+      panel = $(".formpanel:visible").first();
+    }
+
+    return panel.find("> .form > .row > .view:visible").not(".header, .footer").first();
+  }
+
+  function buildTabFlowPath(tabRect, viewRect, sidebarRect) {
+    var startX = Math.round(tabRect.right - 8);
+    var startTop = Math.round(tabRect.top + 1);
+    var startBottom = Math.round(tabRect.bottom - 1);
+    var endX = Math.round(sidebarRect.right + 2);
+    var radius = 40;
+    var endTop = Math.round(startTop - radius);
+    var endBottom = Math.round(startBottom + radius);
+
+    return [
+      "M", startX, startTop,
+      "Q", endX, startTop, endX, endTop,
+      "L", endX, endBottom,
+      "Q", endX, startBottom, startX, startBottom,
+      "Z"
+    ].join(" ");
+  }
+
+  function renderTabFlow($) {
+    var svg = $("#psf-tab-flow");
+    if (isMobile()) {
+      svg.remove();
+      return;
+    }
+
+    var selected = $("#psf-sidebar a.tab.selected").first();
+    var view = findVisibleTabView($);
+    if (!selected.length || !view.length) {
+      svg.remove();
+      return;
+    }
+
+    var tabRect = selected[0].getBoundingClientRect();
+    var viewRect = view[0].getBoundingClientRect();
+    var sidebar = $("#psf-sidebar").first();
+    var sidebarRect = sidebar.length ? sidebar[0].getBoundingClientRect() : { right: tabRect.right };
+    if (viewRect.bottom <= viewRect.top) {
+      svg.remove();
+      return;
+    }
+
+    if (!svg.length) {
+      svg = $('<svg id="psf-tab-flow" class="psf-tab-flow" aria-hidden="true" focusable="false"><path></path></svg>');
+      $("body").append(svg);
+    }
+
+    svg.attr({
+      viewBox: "0 0 " + window.innerWidth + " " + window.innerHeight,
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+    svg.find("path").attr("d", buildTabFlowPath(tabRect, viewRect, sidebarRect));
+
+    if (!state.tabFlowBound) {
+      state.tabFlowBound = true;
+      $(window).on("resize.nintexPsfTabFlow scroll.nintexPsfTabFlow", function () {
+        renderTabFlow($);
+      });
+      $("form").on("scroll.nintexPsfTabFlow", function () {
+        renderTabFlow($);
+      });
+      $("ul.tab-box-tabs").first().on("click.nintexPsfTabFlow keydown.nintexPsfTabFlow", "a.tab", function (event) {
+        if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+
+        [0, 80, 250].forEach(function (delay) {
+          window.setTimeout(function () {
+            renderTabFlow($);
+          }, delay);
+        });
+      });
+    }
   }
 
   function moveIntoCard($, card, elements) {
@@ -1321,7 +1541,7 @@ body {
     var runtimeVerticalMargins = (parseFloat(runtime.css("margin-top")) || 0) + (parseFloat(runtime.css("margin-bottom")) || 0);
     var availableHeight = Math.max(0, window.innerHeight - runtimeTop - runtimeVerticalMargins);
     var footerHeight = footer.outerHeight(true) || 0;
-    var targetGap = Math.max(0, availableHeight - occupiedHeight - footerHeight - 16);
+    var targetGap = Math.max(0, availableHeight - occupiedHeight - footerHeight - 4);
 
     footer.css("--psf-footer-push", targetGap + "px");
   }
@@ -1346,6 +1566,19 @@ body {
       $(window).on("resize.nintexPsfFooter", function () {
         renderFooter($);
       });
+    }
+
+    if (!state.headerResizeBound) {
+      var header = $(".view.header").first();
+      if (header.length && window.ResizeObserver) {
+        state.headerResizeBound = true;
+        var observer = new window.ResizeObserver(function () {
+          window.setTimeout(function () {
+            renderFooter($);
+          }, 0);
+        });
+        observer.observe(header[0]);
+      }
     }
 
     if (!state.footerTabBound) {
@@ -1375,6 +1608,7 @@ body {
     renderBackground($);
     renderHeader($);
     renderNavigation($);
+    renderTabFlow($);
     renderKpis($);
     renderSearch($);
     renderLists($);
