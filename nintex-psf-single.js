@@ -27,6 +27,11 @@
     tabFlowBound: false,
     footerResizeBound: false,
     footerTabBound: false,
+    lastWorklistMenuAnchor: null,
+    worklistMenuActive: false,
+    worklistMenuBound: false,
+    worklistObserverBound: false,
+    worklistRefreshScheduled: false,
     waveAnimationStarted: false
   };
 
@@ -367,11 +372,13 @@ body {
   border: 0 !important;
   display: flex !important;
   gap: 12px;
+  min-height: 58px;
   width: 100%;
   z-index: 1;
 }
 
 .theme-entry.psf .psf-sidebar .tab-wrapper::before {
+  align-self: center;
   border: 2px solid currentColor;
   border-radius: 50%;
   content: "";
@@ -640,6 +647,84 @@ body {
   background: transparent !important;
 }
 
+.theme-entry.psf .ControlPack-Worklist,
+.theme-entry.psf .SourceCodeFormsControlsWorklist {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 20 !important;
+}
+
+.theme-entry.psf .ControlPack-Worklist:hover,
+.theme-entry.psf .ControlPack-Worklist:focus-within,
+.theme-entry.psf .SourceCodeFormsControlsWorklist:hover,
+.theme-entry.psf .SourceCodeFormsControlsWorklist:focus-within {
+  z-index: 21000 !important;
+}
+
+.theme-entry.psf .WorklistItemSectionCell,
+.theme-entry.psf .WorklistItemSectionDiv,
+.theme-entry.psf .WorklistItemGridRow,
+.theme-entry.psf .WorkListItemTable,
+.theme-entry.psf .WorklistTableSelectGridArrow,
+.theme-entry.psf .SelectArrowImageDiv {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+.theme-entry.psf .worklistDisabledOverlay {
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+.theme-entry.psf .WorkListItemTableHeader {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.theme-entry.psf .WorkListGridTableBody {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.theme-entry.psf.psf-worklist-menu-open .ControlPack-Worklist,
+.theme-entry.psf.psf-worklist-menu-open .SourceCodeFormsControlsWorklist,
+.theme-entry.psf.psf-worklist-menu-open .WorklistItemSectionCell,
+.theme-entry.psf.psf-worklist-menu-open .WorkListGridTableBody,
+.theme-entry.psf.psf-worklist-menu-open .WorkListItemTable,
+.theme-entry.psf.psf-worklist-menu-open .WorklistItemSectionDiv,
+.theme-entry.psf.psf-worklist-menu-open .WorklistItemGridRow {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 2147483646 !important;
+}
+
+.theme-entry .popupManager,
+.theme-entry .popup,
+.theme-entry .dialog,
+.theme-entry .drop-menu,
+.theme-entry .menu,
+.theme-entry .context-menu,
+.theme-entry [class*="Worklist"][class*="Menu"],
+.theme-entry [class*="Worklist"][class*="menu"],
+.theme-entry [class*="Worklist"][class*="Popup"],
+.theme-entry [class*="Worklist"][class*="popup"],
+.theme-entry [id*="Worklist"][id*="Menu"],
+.theme-entry [id*="Worklist"][id*="Popup"] {
+  z-index: 30000 !important;
+}
+
+.theme-entry .popup,
+.theme-entry .drop-menu,
+.theme-entry .menu,
+.theme-entry .context-menu,
+.theme-entry [class*="Worklist"][class*="Menu"],
+.theme-entry [class*="Worklist"][class*="menu"],
+.theme-entry [class*="Worklist"][class*="Popup"],
+.theme-entry [class*="Worklist"][class*="popup"] {
+  pointer-events: auto !important;
+}
+
 .theme-entry.psf .SFC.SourceCode-Forms-Controls-Web-TextBox.watermark,
 .theme-entry.psf .input-control-watermark {
   color: rgba(14, 14, 14, 0.36) !important;
@@ -705,6 +790,63 @@ body {
 .theme-entry.psf .calendar-control.datepicker .svg-icon-calendar-date {
   height: 28px !important;
   width: 28px !important;
+}
+
+.theme-entry.psf .worklistToolbarIconWrapper {
+  align-items: center !important;
+  display: inline-flex !important;
+  gap: 10px;
+}
+
+.theme-entry.psf .worklistToolbarIconWrapper .worklist-btn,
+.theme-entry.psf .WorklistThemeIconContainer {
+  align-items: center !important;
+  display: inline-flex !important;
+  height: 32px !important;
+  justify-content: center !important;
+  min-height: 32px !important;
+  min-width: 32px !important;
+  width: 32px !important;
+}
+
+.theme-entry.psf .worklistToolbarIconWrapper .worklist-btn svg,
+.theme-entry.psf .WorklistThemeIconContainer svg {
+  display: block !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  width: 28px !important;
+}
+
+.theme-entry.psf .WorklistItemIcons svg {
+  display: block !important;
+  height: 14px !important;
+  width: 14px !important;
+}
+
+.theme-entry.psf .WorklistItemIcons {
+  line-height: 0 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.theme-entry.psf .WorklistItemIcons .OverdueImageDiv,
+.theme-entry.psf .WorklistItemIcons .PriorityImageDiv {
+  align-items: center !important;
+  display: inline-flex !important;
+  height: 16px !important;
+  justify-content: center !important;
+  position: relative !important;
+  top: 1px !important;
+  vertical-align: middle !important;
+  width: 16px !important;
+}
+
+.theme-entry.psf .WorklistTableSelectGridArrow svg,
+.theme-entry.psf .SelectArrowImageDiv svg {
+  display: block !important;
+  height: 22px !important;
+  width: 22px !important;
 }
 
 .theme-entry.psf .SFC.SourceCode-Forms-Controls-Web-TextBox.readonly,
@@ -995,6 +1137,35 @@ body {
   z-index: 20000 !important;
 }
 
+.theme-entry .popupManager {
+  overflow: visible !important;
+  pointer-events: auto !important;
+  z-index: 2147483647 !important;
+}
+
+.theme-entry .popupManager > *,
+.theme-entry .psf-worklist-action-menu {
+  pointer-events: auto !important;
+  z-index: 2147483647 !important;
+}
+
+.theme-entry .worklist-action-popup,
+.theme-entry [id$="_actionMenuPopup"],
+.worklist-action-popup,
+[id$="_actionMenuPopup"],
+.worklist-action-menu-container {
+  opacity: 1 !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  z-index: 2147483647 !important;
+}
+
+.theme-entry .psf-worklist-action-menu {
+  overflow: visible !important;
+  position: relative !important;
+}
+
 @media (max-width: 768px) {
   .theme-entry.psf .runtime-content.with-sidebar {
     margin-left: 0 !important;
@@ -1134,7 +1305,9 @@ body {
   }
 
   function injectStyles() {
-    if (document.getElementById("nintex-psf-single-style")) {
+    var existing = document.getElementById("nintex-psf-single-style");
+    if (existing) {
+      existing.textContent = css;
       return;
     }
 
@@ -1337,7 +1510,20 @@ body {
       panel = $(".formpanel:visible").first();
     }
 
-    return panel.find("> .form > .row > .view:visible").not(".header, .footer").first();
+    var view = panel.find("> .form > .row > .view:visible").not(".header, .footer").first();
+    if (view.length) {
+      return view;
+    }
+
+    view = panel.find("[data-widget='worklist']:visible, .ControlPack-Worklist:visible, .SourceCodeFormsControlsWorklist:visible").first();
+    if (view.length) {
+      return view;
+    }
+
+    view = panel.find("> .form > .row:visible").filter(function () {
+      return $(this).children(":visible").length > 0;
+    }).first();
+    return view.length ? view : panel;
   }
 
   function buildTabFlowPath(tabRect, viewRect, sidebarRect) {
@@ -1495,6 +1681,208 @@ body {
 
   function renderLists($) {
     markView($, CONFIG.requestListViewName, "requests");
+    elevateWorklistMenus($);
+    bindWorklistMutationObserver($);
+    bindWorklistMenuRefresh($);
+  }
+
+  function elevateWorklistMenus($) {
+    var worklists = $(".theme-entry.psf [data-widget='worklist'], .theme-entry.psf .ControlPack-Worklist, .theme-entry.psf .SourceCodeFormsControlsWorklist");
+    if (!worklists.length) {
+      return;
+    }
+
+    $(".theme-entry.psf").toggleClass("psf-worklist-menu-open", !!state.worklistMenuActive);
+    worklists.each(function () {
+      var worklist = $(this);
+      var worklistZ = state.worklistMenuActive ? "2147483646" : "20";
+      var bodyZ = state.worklistMenuActive ? "2147483646" : "2";
+
+      worklist.add(worklist.closest(".view")).each(function () {
+        this.style.setProperty("overflow", "visible", "important");
+        this.style.setProperty("position", "relative", "important");
+        this.style.setProperty("z-index", worklistZ, "important");
+      });
+
+      worklist.find(".WorklistItemSectionCell, .WorklistItemSectionDiv, .WorklistItemGridRow, .WorkListItemTable, .WorklistTableSelectGridArrow, .SelectArrowImageDiv").each(function () {
+        this.style.setProperty("overflow", "visible", "important");
+        this.style.setProperty("position", "relative", "important");
+        if (state.worklistMenuActive) {
+          this.style.setProperty("z-index", "2147483646", "important");
+        }
+      });
+
+      worklist.find(".worklistDisabledOverlay").each(function () {
+        this.style.setProperty("pointer-events", "none", "important");
+        this.style.setProperty("z-index", "-1", "important");
+      });
+
+      worklist.find(".WorkListItemTableHeader").each(function () {
+        this.style.setProperty("position", "relative", "important");
+        this.style.setProperty("z-index", "1", "important");
+      });
+
+      worklist.find(".WorkListGridTableBody").each(function () {
+        this.style.setProperty("overflow", "visible", "important");
+        this.style.setProperty("position", "relative", "important");
+        this.style.setProperty("z-index", bodyZ, "important");
+      });
+    });
+
+    $(".theme-entry .popupManager, .theme-entry .popup, .theme-entry .drop-menu, .theme-entry .menu, .theme-entry .context-menu, .theme-entry [class*='Worklist'][class*='Menu'], .theme-entry [class*='Worklist'][class*='menu'], .theme-entry [class*='Worklist'][class*='Popup'], .theme-entry [class*='Worklist'][class*='popup'], .theme-entry [id*='Worklist'][id*='Menu'], .theme-entry [id*='Worklist'][id*='Popup'], .worklist-action-popup, [id$='_actionMenuPopup'], .worklist-action-menu-container").each(function () {
+      if (!$(this).hasClass("popupManager") && $(this).css("position") === "static") {
+        this.style.setProperty("position", "relative", "important");
+      }
+      if ($(this).hasClass("popupManager")) {
+        this.style.setProperty("overflow", "visible", "important");
+        this.style.setProperty("pointer-events", "auto", "important");
+      }
+      this.style.setProperty("z-index", "2147483647", "important");
+      this.style.setProperty("pointer-events", "auto", "important");
+      this.style.setProperty("opacity", "1", "important");
+      this.style.setProperty("overflow", "visible", "important");
+      this.style.setProperty("visibility", "visible", "important");
+    });
+
+    positionWorklistActionMenu($);
+  }
+
+  function findVisibleWorklistActionMenus($) {
+    return $(".worklist-action-popup, [id$='_actionMenuPopup'], .worklist-action-menu-container, .popupManager > *, .theme-entry .popup, .theme-entry [class*='menu'], .theme-entry [class*='Menu']").filter(function () {
+      var item = $(this);
+      if (!item.is(":visible")) {
+        return false;
+      }
+
+      var text = item.text() || "";
+      return text.indexOf("Complete") !== -1 || text.indexOf("Cancelled") !== -1 || text.indexOf("View Flow") !== -1;
+    });
+  }
+
+  function openPopupAncestors($, menu) {
+    menu.parentsUntil("body").addBack().each(function () {
+      this.style.setProperty("overflow", "visible", "important");
+      this.style.setProperty("pointer-events", "auto", "important");
+      this.style.setProperty("z-index", "2147483647", "important");
+
+      if ($(this).css("position") === "static") {
+        this.style.setProperty("position", "relative", "important");
+      }
+    });
+  }
+
+  function positionWorklistActionMenu($) {
+    if (!state.lastWorklistMenuAnchor || !document.documentElement.contains(state.lastWorklistMenuAnchor)) {
+      return;
+    }
+
+    findVisibleWorklistActionMenus($).each(function () {
+      var menu = $(this);
+      menu.addClass("psf-worklist-action-menu");
+      openPopupAncestors($, menu);
+
+      if ($(this).css("position") === "static") {
+        this.style.setProperty("position", "relative", "important");
+      }
+      this.style.setProperty("opacity", "1", "important");
+      this.style.setProperty("overflow", "visible", "important");
+      this.style.setProperty("visibility", "visible", "important");
+      this.style.setProperty("z-index", "2147483647", "important");
+      this.style.setProperty("pointer-events", "auto", "important");
+    });
+  }
+
+  function scheduleWorklistRefresh($) {
+    if (state.worklistRefreshScheduled) {
+      return;
+    }
+
+    state.worklistRefreshScheduled = true;
+    window.setTimeout(function () {
+      state.worklistRefreshScheduled = false;
+      elevateWorklistMenus($);
+    }, 0);
+  }
+
+  function bindWorklistMutationObserver($) {
+    if (state.worklistObserverBound || !window.MutationObserver) {
+      return;
+    }
+
+    var root = document.body;
+    if (!root) {
+      return;
+    }
+
+    state.worklistObserverBound = true;
+    var observer = new window.MutationObserver(function (mutations) {
+      var shouldRefresh = false;
+
+      mutations.some(function (mutation) {
+        var target = mutation.target;
+        if (!target || target.nodeType !== 1) {
+          return false;
+        }
+
+        var element = $(target);
+        if (
+          element.is(".WorkListGridTableBody, .WorklistItemGridRow, .WorklistItemSectionCell, .WorklistTableSelectGridArrow, .SelectArrowImageDiv, .popupManager, .popup, .drop-menu, .worklist-action-popup, [id$='_actionMenuPopup'], .worklist-action-menu-container") ||
+          element.closest(".ControlPack-Worklist, .SourceCodeFormsControlsWorklist, .popupManager, .worklist-action-popup, [id$='_actionMenuPopup'], .worklist-action-menu-container").length
+        ) {
+          shouldRefresh = true;
+          return true;
+        }
+
+        return false;
+      });
+
+      if (shouldRefresh) {
+        scheduleWorklistRefresh($);
+      }
+    });
+
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["class", "style"],
+      childList: true,
+      subtree: true
+    });
+  }
+
+  function bindWorklistMenuRefresh($) {
+    if (state.worklistMenuBound) {
+      return;
+    }
+
+    state.worklistMenuBound = true;
+    $(document).on("click.nintexPsfWorklistMenu keydown.nintexPsfWorklistMenu", ".theme-entry.psf .WorklistTableSelectGridArrow, .theme-entry.psf .SelectArrowImageDiv", function (event) {
+      if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+
+      state.lastWorklistMenuAnchor = $(this).closest(".WorklistTableSelectGridArrow")[0] || this;
+      state.worklistMenuActive = true;
+      [0, 50, 150, 300, 600].forEach(function (delay) {
+        window.setTimeout(function () {
+          elevateWorklistMenus($);
+        }, delay);
+      });
+    });
+
+    $(document).on("click.nintexPsfWorklistMenuClose keydown.nintexPsfWorklistMenuClose", function (event) {
+      if (event.type === "keydown" && event.key !== "Escape") {
+        return;
+      }
+
+      if (event.type === "click" && $(event.target).closest(".WorklistTableSelectGridArrow, .SelectArrowImageDiv, .popupManager, .popup, .drop-menu, [class*='menu'], [class*='Menu']").length) {
+        return;
+      }
+
+      state.worklistMenuActive = false;
+      window.setTimeout(function () {
+        elevateWorklistMenus($);
+      }, 0);
+    });
   }
 
   function findFooterView($) {
